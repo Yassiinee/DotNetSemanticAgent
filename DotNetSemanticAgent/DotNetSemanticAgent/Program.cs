@@ -10,7 +10,7 @@ using Microsoft.SemanticKernel.Connectors.OpenAI;
 // Build configuration (Alternative approach without SetBasePath)
 IConfiguration configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
+    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Production"}.json", optional: true)
     .AddEnvironmentVariables()
     .AddUserSecrets<Program>() // For local development
     .Build();
@@ -27,8 +27,17 @@ string apiKey = configuration["AzureOpenAI:ApiKey"]
 IKernelBuilder builder = Kernel.CreateBuilder()
     .AddAzureOpenAIChatCompletion(modelId, endpoint, apiKey);
 
-// Add enterprise components 
-builder.Services.AddLogging(services => services.AddConsole().SetMinimumLevel(LogLevel.Trace));
+string logLevelString = configuration["Logging:LogLevel"]
+    ?? Environment.GetEnvironmentVariable("LOG_LEVEL")
+    ?? "Information";
+
+if (!Enum.TryParse<LogLevel>(logLevelString, ignoreCase: true, out var minLogLevel))
+{
+    // If parsing fails, default to Information
+    minLogLevel = LogLevel.Information;
+}
+
+builder.Services.AddLogging(services => services.AddConsole().SetMinimumLevel(minLogLevel));
 
 // Build the kernel 
 Kernel kernel = builder.Build();
