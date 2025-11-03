@@ -1,0 +1,47 @@
+# Visual Studio
+.vs/
+
+# Build artifacts
+bin/
+obj/
+
+# Rider
+.idea/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# NuGet
+*.nupkg
+packages/
+project.lock.json
+
+# Visual Studio Code
+.vscode/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# JetBrains Rider
+.idea/
+
+# dotnet tool and package managers
+.nuget/
+node_modules/
+
+# Logs
+*.log
+
+# compiled files
+*.dll
+*.exe
+*.pdb
+*.mdb
+
+# Ignore build output folders in case some are nested
+**/bin/
+**/obj/
